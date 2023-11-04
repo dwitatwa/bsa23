@@ -15,6 +15,10 @@ type projectDataType = {
   nilai: string;
 };
 
+// conf
+const APP_URL =
+  process.env.NODE_ENV === "production" ? "https://bsa23.vercel.app" : "http://localhost:3000";
+
 type dataStateType = null | "insert" | "update" | "delete";
 
 export default function Home() {
@@ -37,7 +41,7 @@ export default function Home() {
       theNext = nextDataSkip - prev < 0 ? 0 : nextDataSkip - prev;
     }
 
-    const response = await axios.get(`http://localhost:3000/api/project?skip=${theNext}`);
+    const response = await axios.get(`${APP_URL}/api/project?skip=${theNext}`);
     showSnack(true, "Data berhasil dimuat", "success");
 
     if (response.data.length !== 0) {
@@ -62,7 +66,7 @@ export default function Home() {
     const formData = new FormData(formElement);
     const formDataJSON = Object.fromEntries(formData.entries());
 
-    const response = await axios.post("http://localhost:3000/api/project", formDataJSON);
+    const response = await axios.post(`${APP_URL}/api/project`, formDataJSON);
 
     const temp = [...projectData];
     temp.push(response.data);
@@ -86,7 +90,7 @@ export default function Home() {
     const formDataJSON = Object.fromEntries(formData.entries());
     formDataJSON["id"] = projectData[updateIndex].id;
 
-    const response = await axios.put("http://localhost:3000/api/project", formDataJSON);
+    const response = await axios.put(`${APP_URL}/api/project`, formDataJSON);
 
     const temp = [...projectData];
     temp[updateIndex] = response.data;
@@ -105,7 +109,7 @@ export default function Home() {
 
   async function handleDelete(id: string) {
     showSnack(true, "Menghapus data ...", "loading");
-    const response = await axios.delete(`http://localhost:3000/api/project?id=${id}`);
+    const response = await axios.delete(`${APP_URL}/api/project?id=${id}`);
     const temp = projectData.filter((item) => item.id !== response.data.id);
     setProjectData(temp);
     showSnack(true, "Data berhasil dihapus", "success");
